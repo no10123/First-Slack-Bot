@@ -20,6 +20,7 @@
   "homepage": "https://github.com/no10123/First-Slack-Bot#readme",
   "dependencies": {
     "@slack/bolt": "^4.7.3",
+    "axios": "^1.16.1",
     "dotenv": "^17.4.2"
   }
 }
