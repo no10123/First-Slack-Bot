@@ -148,7 +148,8 @@ app.command("/pug-help", async ({ ack, respond }) => {
                 "- `/calc$ [expression]`  - evaluates a expression\n" +
                 "- `/vigenere$`           - another cipher.\n" +
                 "- `/rail$`               - oh,imo and guess what another one.\n" +
-                "- `/b64$`                - wait, there's another ciphers."
+                "- `/b64$`                - wait, there's another ciphers.\n" +
+                "- `/u$                   - converts between string and unicode (use ',')."
         }
       },
       {
@@ -638,4 +639,25 @@ app.command("/b64$", async ({ command, ack, respond }) => {
 
     if (mode == "E") {await respond({ text: `*Encoded:* \`${Buffer.from(Text).toString("base64")}\`` });}
     else             {await respond({ text: `*Decoded:* \`${Buffer.from(Text, "base64").toString("utf-8")}\`` });}
+});
+
+app.command("/U$", async ({ command, ack, respond }) => {
+    await ack();
+    const input = command.text;
+    if (!input) {
+        await respond({ text: "add input." });
+        return;
+    }
+    const mode = input.charAt(0).toUpperCase();
+    const Text = input.substring(2);
+    if (mode != "E" && mode != "D") {
+        await respond({ text: "make shure to pick a mode." });
+        return;
+    }
+
+    const encoded = [...Text].map(char => char.codePointAt(0));
+    const decoded = String.fromCodePoint(...Text.split(","))
+
+    if (mode == "E") {await respond({ text: `*Encoded:* ${encoded}`});}
+    else             {await respond({ text: `*Decoded:* ${decoded}`});};
 });
