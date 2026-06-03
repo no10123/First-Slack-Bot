@@ -78,7 +78,7 @@ const morseCodeMap = {
   "9": "----.", "0": "-----", " ": "/"
 };
 
-const iMorseMap = Object.fromEntries(
+const iMorseCodeMap = Object.fromEntries(
   Object.entries(morseCodeMap).map(([letter, morse]) => [morse, letter])
 );
 
@@ -147,7 +147,7 @@ app.command("/pug-help", async ({ ack, respond }) => {
                 "- `/hash$ [text]`        - hashes the text.\n" +
                 "- `/calc$ [expression]`  - evaluates a expression\n" +
                 "- `/vigenere$`           - another cipher.\n" +
-                "- `/rail$`               - oh, and guess what another one.\n" +
+                "- `/rail$`               - oh,imo and guess what another one.\n" +
                 "- `/b64$`                - wait, there's another ciphers."
         }
       },
@@ -537,7 +537,7 @@ app.command("/vigenere$", async ({ command, ack, respond }) => {
     }
     const parts = input.split(" ");
     const mode = parts[0].toUpperCase();
-    let Vkey = parts[1];
+    let VKey = parts[1];
     const message = parts.slice(2).join(" ");
     if ((mode !== "E" && mode !== "D") || !VKey || !message) {
         await respond({ text: "wrong format" });
@@ -605,8 +605,8 @@ app.command("/rail$", async ({ command, ack, respond }) => {
         let index = 0;
         for (let R = 0; R < r; R++) {
             for (let c = 0; c < message.length; c++) {
-                if (pattern[R][c] == "*" && index < message.length) {
-                    pattern[R][c] = message[index++];
+                if (p[R][c] == "*" && index < message.length) {
+                    p[R][c] = message[index++];
                 };
             };
         };
