@@ -174,3 +174,10 @@ app.command("/sk$", async ({command, ack, respond }) => {
         });
     }
 });
+
+app.command("/rk", async ({ack, respond}) => {
+    key = input.split(",")
+    await respond({ 
+      text: `Key has been reset.\nNew Key Layout: \`${key.join("")}\`` 
+    });
+})
