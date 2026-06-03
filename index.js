@@ -71,3 +71,9 @@ app.command("/pug-dogfact", async ({ ack, respond }) => {
     await respond({ text: "Failed to fetch a fact." });
   }
 });
+
+app.command("/echo", async ({ack, respond}) => {
+    await ack();
+    const I = req.body.text;
+    await respond(I)
+})
