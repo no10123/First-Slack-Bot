@@ -72,7 +72,7 @@ app.command("/pug-dogfact", async ({ ack, respond }) => {
   }
 });
 
-app.command("/echo", async ({command, ack, respond}) => {
+app.command("/pug-echo", async ({command, ack, respond}) => {
     await ack();
     const I = command.body.text;
     if (!I) {
