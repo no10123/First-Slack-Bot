@@ -26,10 +26,11 @@ app.command("/pug-help", async ({ ack, respond }) => {
   await respond({
     text:
 `Available Commands:
-/pug-help - shows this menu
-/pug-ping - Check bot latency
+/pug-help    - shows this menu
+/pug-ping    - Check bot latency
 /pug-catfact - Get a cat fact
-/pug-dogfact - get a dog fact`
+/pug-dogfact - get a dog fact
+/pug-joke    - tells a joke`
   });
 });
 
@@ -65,7 +66,7 @@ app.command("/pug-dogfact", async ({ ack, respond }) => {
 
   try {
     const response = await axios.get("https://dogapi.dog/api/v2/facts?limit=1");
-    await respond({text:`${response.data[0].attributes.body}`});
+    await respond({text:`${response.data.data[0].attributes.body}`});
   } catch (err) {
     await respond({ text: "Failed to fetch a fact." });
   }
