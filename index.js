@@ -70,13 +70,49 @@ app.command("/pug-ping", async ({ command, ack, respond }) => {
 app.command("/pug-help", async ({ ack, respond }) => {
   await ack();
   await respond({
-    text:
-`Available Commands:
-/pug-help    - shows this menu
-/pug-ping    - Check bot latency
-/pug-catfact - Get a cat fact
-/pug-dogfact - get a dog fact
-/pug-joke    - tells a joke`
+    blocks: [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: "*Pug Bot - Cryptography & Utility Bot*\nStuff you can do:"
+        }
+      },
+      { type: "divider" },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: "Core: " +
+                "- `/pug-help`        - displays this.\n" +
+                "- `/pug-ping`        - pings the bot.\n" +
+                "- `/pug-echo [text]` - just says the text"
+        }
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: "*Cryptography & Math:*\n" +
+                "- `/e$ [text]`           - Custom differential encoder.\n" +
+                "- `/d$ [text]`           - Custom differential decoder.\n" +
+                "- `/sk$ [optional: ...]` - shuffles, or sets the key used for /e$ and /d$.\n" +
+                "- `/rk`                  - resets key.\n" +
+                "- `/hash$ [text]`        - hashes the text.\n" +
+                "- `/calc$ [expression]`  - evaluates a expression"
+        }
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: "*API Stuff:*\n" +
+                "- `/pug-catfact` - gives you a fun cat fact.\n" +
+                "- `/pug-dogfact` - gives you a fun dog fact.\n" +
+                "- `/pug-joke`    - tells a joke."
+        }
+      }
+    ]
   });
 });
 
