@@ -129,7 +129,7 @@ app.command("/pug-help", async ({ ack, respond }) => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "Core: \n" +
+          text: "*Core: *\n" +
                 "- `/pug-help`        - displays this.\n" +
                 "- `/pug-ping`        - pings the bot.\n" +
                 "- `/pug-echo [text]` - just says the text\n"
@@ -149,7 +149,7 @@ app.command("/pug-help", async ({ ack, respond }) => {
                 "- `/vigenere$`           - another cipher.\n" +
                 "- `/rail$`               - oh,imo and guess what another one.\n" +
                 "- `/b64$`                - wait, there's another ciphers.\n" +
-                "- `/u$                   - converts between string and unicode (use ',').\n"
+                "- `/u$`                   - converts between string and unicode (use ',').\n"
         }
       },
       {
@@ -641,7 +641,7 @@ app.command("/b64$", async ({ command, ack, respond }) => {
     else             {await respond({ text: `*Decoded:* \`${Buffer.from(Text, "base64").toString("utf-8")}\`` });}
 });
 
-app.command("/U$", async ({ command, ack, respond }) => {
+app.command("/u$", async ({ command, ack, respond }) => {
     await ack();
     const input = command.text;
     if (!input) {
