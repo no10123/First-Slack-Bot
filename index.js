@@ -48,7 +48,7 @@ const LOG_FILE = path.join(__dirname, "log.json");
 let log;
 try {
     if (fs.existsSync(LOG_FILE)) {
-        key = JSON.parse(fs.readFileSync(LOG_FILE, "utf8"));
+        log = JSON.parse(fs.readFileSync(LOG_FILE, "utf8"));
         console.log("loaded log, wowie :)");
     } else {
         throw new Error("the json file is probally empty...");
@@ -308,7 +308,7 @@ app.command("/calc$", async ({ command, ack, respond }) => {
 
 app.command("/ecaesar$", async ({ command, ack, respond }) => {
     await ack();
-    const input = command.text;
+    let input = command.text;
     if (!input) {
         await respond({ text: "oh no your empty msg is like a stab..." });
         return;
@@ -316,7 +316,7 @@ app.command("/ecaesar$", async ({ command, ack, respond }) => {
     // get num and msg seperated
     const [num, ...messageP] = input.split(" "); ;
     const shift = parseInt(num, 10);
-    const message = messageP.join(" ");
+    let message = messageP.join(" ");
     if (isNaN(shift) || !message) {
         await respond({ text: "are you trying to `poison` me?" });
         return;
@@ -336,7 +336,7 @@ app.command("/dcaesar$", async ({ command, ack, respond }) => {
     // get num and msg seperated
     const [num, ...messageP] = input.split(" ");
     const shift = parseInt(num, 10);
-    const message = messageP.join(" ");
+    let message = messageP.join(" ");
     if (isNaN(shift) || !message) {
         await respond({ text: "are you trying to `poison` me?" });
         return;
@@ -354,14 +354,14 @@ app.command("/morse$", async ({ command, ack, respond }) => {
         return;
     }
     if (input[0] == "E" || input[0] == "D") {
-        const [Type, ...input] = input.split(" ")
+        let [Type, ...input] = input.split(" ")
     };
     const chars = input.toLowerCase().split("");
     let R = [];
 
     for (let char of chars) {
         if (morseCodeMap[char]) {
-            if (Type == "D") {
+            if (Type && Type == "D") {
                 R.push(imorseCodeMap[char]);
             } else {
                 R.push(morseCodeMap[char]);
@@ -411,13 +411,13 @@ app.command("/coppy$", async ({command, ack, respond}) => {
     if(!input) {return await respond({ text: "you can't coppy nothing." });};
     log.push(input);
     saveLogToFile();
-    await respond({ text: `you coppied: ${input}, id:${log.length}` });
+    await respond({ text: `you coppied: ${input}, id:${log.length-1}` });
 });
 
 app.command("/paste$", async ({command, ack, respond}) => {
     await ack();
     let input = command.text;
-    if(!input) {input = log.length;};
+    if(!input) {input = log.length-1;};
     R = log[parseInt(input)]
     await respond({ text: `loaded text: ${R}, id:${input}` });
 });
