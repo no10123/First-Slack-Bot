@@ -139,3 +139,26 @@ app.command("/d$", async ({ command, ack, respond }) => {
     }
     await respond({ text: `decoded msg: ${D.join("")}` });
 });
+
+app.command("/sk$", async ({command, ack, respond }) => {
+    await ack();
+    const input = command.text;
+
+    if (!input) {
+        //fisher yates shuffle algo
+        for (let i = key.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            let temp = key[i];
+            key[i] = key[j];
+            key[j] = temp;
+        };
+        await respond({ 
+            text: `Key has been shuffled.\nNew Key Layout: \`${key.join("")}\`` 
+        });
+    } else {
+        key = input.split(",")
+        await respond({ 
+            text: `Key has been set.\nNew Key Layout: \`${key.join("")}\`` 
+        });
+    }
+});
