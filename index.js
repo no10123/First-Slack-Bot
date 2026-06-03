@@ -156,7 +156,7 @@ app.command("/pug-dogfact", async ({ ack, respond }) => {
 
 app.command("/pug-echo", async ({command, ack, respond}) => {
     await ack();
-    const I = command.body.text;
+    const I = command.text;
     if (!I) {
         await respond({text:"type something!"});
         return;
@@ -232,7 +232,7 @@ app.command("/sk$", async ({command, ack, respond }) => {
 });
 
 app.command("/rk", async ({ack, respond}) => {
-    key = input.split(",")
+    key = ["a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z"];
     await respond({ 
       text: `Key has been reset.\nNew Key Layout: \`${key.join("")}\`` 
     });
@@ -244,7 +244,7 @@ app.command("/hash$", async ({ command, ack, respond }) => {
     if (!input) return await respond("#nothing to hash.");
 
     // SHA-256 hash
-    const hash = crypto.createHash("sha256").update(text).digest("hex");
+    const hash = crypto.createHash("sha256").update(input).digest("hex");
     await respond({ text: `*SHA-256 Hash:* \`${hash}\`` });
 });
 
@@ -279,7 +279,7 @@ app.command("/ecaesar$", async ({ command, ack, respond }) => {
 
 app.command("/dcaesar$", async ({ command, ack, respond }) => {
     await ack();
-    const input = command.text;
+    let input = command.text;
     if (!input) {
         await respond({ text: "oh no your empty msg is like a stab..." });
         return;
