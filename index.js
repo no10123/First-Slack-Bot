@@ -421,3 +421,36 @@ app.command("/paste$", async ({command, ack, respond}) => {
     R = log[parseInt(input)]
     await respond({ text: `loaded text: ${R}, id:${input}` });
 });
+
+app.command("/pug-weather", async ({ command, ack, respond }) => {
+    await ack();
+    const city = command.text;
+    if (!city) {
+        await respond({ text: "add city." });
+        return;
+    }
+    try {
+        const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`;
+        const geoResponse = await axios.get(geoUrl);
+        if (!geoResponse.data.results || geoResponse.data.results.length === 0) {
+            await respond({ text: `"${city}" doesn't exist.` });
+            return;
+        };
+        const { latitude, longitude, name, country, admin1 } = geoResponse.data.results[0];
+        const region = admin1 ? `${name}, ${admin1}, ${country}` : `${name}, ${country}`;
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph`;
+        const weatherResponse = await axios.get(weatherUrl);
+        const current = weatherResponse.data.current;
+        const temp = current.temperature_2m;
+        const humidity = current.relative_humidity_2m;
+        const wind = current.wind_speed_10m;
+        const R = `*Weather Report for ${region}*\n` +
+                       `- Temperature: ${temp}'F\n` +
+                       `- Humidity: ${humidity}%\n` +
+                       `- Wind Speed: ${wind} mph`;
+        await respond({ text: R });
+    } catch (err) {
+        console.error(err);
+        await respond({ text: "The API had an error." });
+    }
+});
