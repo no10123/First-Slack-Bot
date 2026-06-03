@@ -28,7 +28,7 @@ function shuffleKey() {
 }
 
 // 0 0 * * * === Minute 0, Hour 0, Day *, Month *, Day of week *
-cron.schedule("50 10 * * *", () => {
+cron.schedule("0 0 * * *", () => {
     shuffleKey();
 }, {
     scheduled: true,
