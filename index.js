@@ -3,6 +3,8 @@ const axios = require("axios");
 const cron = require("node-cron");
 const crypto = require("crypto");
 const Parser = require("expr-eval").Parser;
+const fs = require("fs");
+const path = require("path");
 const { App } = require("@slack/bolt");
 const range = (length) => Array.from({ length }, (_, i) => i);
 
@@ -12,12 +14,32 @@ const app = new App({
   socketMode: true
 });
 
-let key = [
-  "a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", 
-  "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", 
-  "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", 
-  "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z"
-];
+
+const KEY_FILE = path.join(__dirname, "key.json");
+
+let key;
+try {
+    if (fs.existsSync(KEY_FILE)) {
+        key = JSON.parse(fs.readFileSync(KEY_FILE, "utf8"));
+        console.log("loaded key, wowie :)");
+    } else {
+        throw new Error("the json file is probally empty...");
+    }
+} catch (e) {
+    key = [
+      "a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", 
+      "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", 
+      "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", 
+      "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z"
+    ];
+    fs.writeFileSync(KEY_FILE, JSON.stringify(key), "utf8");
+}
+
+// guess what this does.
+function saveKeyToFile() {
+    fs.writeFileSync(KEY_FILE, JSON.stringify(key), "utf8");
+    console.log("updated cipher");
+}
 
 const morseCodeMap = {
   "a": ".-",    "b": "-...",  "c": "-.-.",  "d": "-..",
@@ -43,9 +65,10 @@ function shuffleKey() {
         let temp = key[i];
         key[i] = key[j];
         key[j] = temp;
-    }
+    };
+    const path = require("path");
     console.log(`[Cron] Key automatically shuffled. New order: ${key.join("")}`);
-}
+};
 
 // 0 0 * * * === Minute 0, Hour 0, Day *, Month *, Day of week *
 cron.schedule("0 0 * * *", () => {
@@ -226,6 +249,7 @@ app.command("/sk$", async ({command, ack, respond }) => {
         });
     } else {
         key = input.split(",")
+        const path = require("path");
         await respond({ 
             text: `Key has been set.\nNew Key Layout: \`${key.join("")}\`` 
         });
@@ -234,6 +258,7 @@ app.command("/sk$", async ({command, ack, respond }) => {
 
 app.command("/rk", async ({ack, respond}) => {
     key = ["a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z"];
+    saveKeyToFile();
     await respond({ 
       text: `Key has been reset.\nNew Key Layout: \`${key.join("")}\`` 
     });
