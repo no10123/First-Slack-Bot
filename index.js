@@ -65,14 +65,8 @@ app.command("/pug-dogfact", async ({ ack, respond }) => {
 
   try {
     const response = await axios.get("https://dogapi.dog/api/v2/facts?limit=1");
-    await respond({
-      text:
-`${response.data.type}
-
-${response.data.attributes.body}`
-    });
+    await respond({text:`${response.data[0].attributes.body}`});
   } catch (err) {
-    await respond({ text: "Failed to fetch a joke." });
+    await respond({ text: "Failed to fetch a fact." });
   }
 });
-
