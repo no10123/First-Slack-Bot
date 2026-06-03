@@ -1,14 +1,39 @@
 require("dotenv").config();
 const axios = require("axios");
-
+const cron = require("node-cron");
 const { App } = require("@slack/bolt");
+const range = (length) => Array.from({ length }, (_, i) => i);
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   appToken: process.env.SLACK_APP_TOKEN,
   socketMode: true
 });
-const range = (length) => Array.from({ length }, (_, i) => i);
+
+let key = [
+  "a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", 
+  "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", 
+  "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", 
+  "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z"
+];
+
+function shuffleKey() {
+    for (let i = key.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        let temp = key[i];
+        key[i] = key[j];
+        key[j] = temp;
+    }
+    console.log(`[Cron] Key automatically shuffled. New order: ${key.join("")}`);
+}
+
+// 0 0 * * * === Minute 0, Hour 0, Day *, Month *, Day of week *
+cron.schedule("50 10 * * *", () => {
+    shuffleKey();
+}, {
+    scheduled: true,
+    timezone: "America/New_York" // Change this to your preferred local timezone!
+});
 
 app.command("/pug-ping", async ({ command, ack, respond }) => {
   const start = Date.now();
@@ -83,13 +108,6 @@ app.command("/pug-echo", async ({command, ack, respond}) => {
     await respond({text:I})
 });
 
-let key = [
-  "a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", 
-  "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", 
-  "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", 
-  "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z"
-];
-
 app.command("/e$", async ({ command, ack, respond }) => {
     await ack();
     const input = command.text; 
@@ -145,13 +163,7 @@ app.command("/sk$", async ({command, ack, respond }) => {
     const input = command.text;
 
     if (!input) {
-        //fisher yates shuffle algo
-        for (let i = key.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            let temp = key[i];
-            key[i] = key[j];
-            key[j] = temp;
-        };
+        shuffleKey();
         await respond({ 
             text: `Key has been shuffled.\nNew Key Layout: \`${key.join("")}\`` 
         });
