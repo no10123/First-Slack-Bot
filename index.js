@@ -14,7 +14,7 @@ const app = new App({
   socketMode: true
 });
 
-
+//key stuff
 const KEY_FILE = path.join(__dirname, "key.json");
 
 let key;
@@ -39,6 +39,29 @@ try {
 function saveKeyToFile() {
     fs.writeFileSync(KEY_FILE, JSON.stringify(key), "utf8");
     console.log("updated cipher");
+}
+
+//log for coppy + paste
+
+const LOG_FILE = path.join(__dirname, "log.json");
+
+let log;
+try {
+    if (fs.existsSync(LOG_FILE)) {
+        key = JSON.parse(fs.readFileSync(LOG_FILE, "utf8"));
+        console.log("loaded log, wowie :)");
+    } else {
+        throw new Error("the json file is probally empty...");
+    }
+} catch (e) {
+    log = [];
+    fs.writeFileSync(LOG_FILE, JSON.stringify(log), "utf8");
+}
+
+// guess what this does.
+function saveLogToFile() {
+    fs.writeFileSync(LOG_FILE, JSON.stringify(log), "utf8");
+    console.log("updated log");
 }
 
 const morseCodeMap = {
@@ -380,4 +403,21 @@ app.command("/translate$", async ({ command, ack, respond }) => {
         console.error(err);
         await respond({ text: "you or the API encountured an error. Yipee..." });
     }
+});
+
+app.command("/coppy$", async ({command, ack, respond}) => {
+    await ack();
+    let input = command.text;
+    if(!input) {return await respond({ text: "you can't coppy nothing." });};
+    log.push(input);
+    saveLogToFile();
+    await respond({ text: `you coppied: ${input}, id:${log.length}` });
+});
+
+app.command("/paste$", async ({command, ack, respond}) => {
+    await ack();
+    let input = command.text;
+    if(!input) {input = log.length;};
+    R = log[parseInt(input)]
+    await respond({ text: `loaded text: ${R}, id:${input}` });
 });
