@@ -156,7 +156,8 @@ app.command("/pug-help", async ({ ack, respond }) => {
                 "- `/pug-catfact` - gives you a fun cat fact.\n" +
                 "- `/pug-dogfact` - gives you a fun dog fact.\n" +
                 "- `/pug-joke`    - tells a joke.\n" +
-                "- `/translate$`  - translates text"
+                "- `/translate$`  - translates text\n" +
+                "- `/pug-weather [city]` - fetches weather for that reigon"
         }
       }
     ]
@@ -453,4 +454,35 @@ app.command("/pug-weather", async ({ command, ack, respond }) => {
         console.error(err);
         await respond({ text: "The API had an error." });
     }
+});
+
+app.command("/pug-remind", async ({ command, ack, respond, client }) => {
+    await ack();
+    const input = command.text;
+    if (!input) {
+        await respond({ text: "no input :(" });
+        return;
+    };
+
+    const parts = input.split(" ");
+    const minutes = parseFloat(parts[0]);
+    const message = parts.slice(1).join(" ");
+
+    if (!minutes || minutes <= 0 || !message) {
+        await respond({ text: "quit trying to break me." });
+        return;
+    };
+
+    await respond({ text: `message: "${message}"\nTime left: ${minutes} minutes` });
+    setTimeout(async () => {
+        try {
+            await client.chat.postMessage({
+                channel: command.channel_id,
+                user: command.user_id,
+                text: `<@${command.user_id}> *Reminder:* ${message}`
+            });
+        } catch (err) {
+            console.error("error with msg: ", err);
+        };
+    }, minutes * 60_000);
 });
