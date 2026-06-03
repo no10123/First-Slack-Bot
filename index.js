@@ -261,7 +261,7 @@ app.command("/dcaesar$", async ({ command, ack, respond }) => {
     await respond({ text: `encoded msg: "${message}"` });
 });
 
-app.command("/morse", async ({ command, ack, respond }) => {
+app.command("/morse$", async ({ command, ack, respond }) => {
     await ack();
     let input = command.text;
     if (!input) {
