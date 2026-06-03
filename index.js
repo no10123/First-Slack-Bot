@@ -145,7 +145,10 @@ app.command("/pug-help", async ({ ack, respond }) => {
                 "- `/sk$ [optional: ...]` - shuffles, or sets the key used for /e$ and /d$.\n" +
                 "- `/rk`                  - resets key.\n" +
                 "- `/hash$ [text]`        - hashes the text.\n" +
-                "- `/calc$ [expression]`  - evaluates a expression"
+                "- `/calc$ [expression]`  - evaluates a expression\n" +
+                "- `/vigenere$`           - another cipher.\n" +
+                "- `/rail$`               - oh, and guess what another one.\n" +
+                "- `/b64$`                - wait, there's another ciphers."
         }
       },
       {
@@ -523,4 +526,116 @@ app.command("/pug-rate", async ({ command, ack, respond }) => {
         console.error(err);
         await respond({ text: "API is bussy currently, try again later." });
     };
+});
+
+app.command("/vigenere$", async ({ command, ack, respond }) => {
+    await ack();
+    const input = command.text;
+    if (!input) {
+        await respond({ text: "this command needs an input" });
+        return;
+    }
+    const parts = input.split(" ");
+    const mode = parts[0].toUpperCase();
+    let Vkey = parts[1];
+    const message = parts.slice(2).join(" ");
+    if ((mode !== "E" && mode !== "D") || !VKey || !message) {
+        await respond({ text: "wrong format" });
+        return;
+    }
+    const alphabet = "abcdefghijklmnopqrstuvwxyz";
+    let keyIndex = 0;
+    let result = [];
+    VKey = VKey.toLowerCase().replace(/[^a-z]/g, "");
+    if (VKey.length === 0) {
+        await respond({ text: "your key, must be letter's only." });
+        return;
+    }
+    for (let i = 0; i < message.length; i++) {
+        let char = message[i];
+        let Index = alphabet.indexOf(char.toLowerCase());
+        if (Index === -1) {
+            result.push(char);
+            continue;
+        };
+        let shift = alphabet.indexOf(VKey[Index % VKey.length]);
+        if (mode === "D") shift = (26 - shift) % 26;
+        let rc = alphabet[(Index + shift) % 26]
+        result.push((char === char.toUpperCase()) ? rc.toUpperCase() : rc);
+        Index++;
+    }
+    await respond({ text: `*${mode === "E" ? "Encoded" : "Decoded"}:* \`${result.join("")}\`` });
+});
+
+app.command("/rail$", async ({ command, ack, respond }) => {
+    await ack();
+    const input = command.text;
+    if (!input) {
+        await respond({ text: "Usage: `/rail$ [E/D] [rails] [message]`\nExample: `/rail$ E 3 hello`" });
+        return;
+    }
+    const parts = input.split(" ");
+    const mode = parts[0].toUpperCase();
+    const rails = parseInt(parts[1], 10);
+    const message = parts.slice(2).join(" ");
+
+    if ((mode != "E" && mode != "D") || isNaN(rails) || rails < 2 || !message) {
+        await respond({ text: "wrog notation" });
+        return;
+    } else if (mode === "E") {
+        let f = Array.from({ length: rails }, () => []);
+        let r = 0;
+        let d = 1;
+
+        for (let char of message) {
+            f[r].push(char);
+            r += d;
+            if (r == 0 || r == rails - 1) d *= -1;
+        };
+        await respond({ text: `*Encoded:* \`${f.flat().join("")}\`` });
+    } else {
+        let p = Array.from({ length: rails }, () => Array(message.length).fill(null));
+        let r = 0;
+        let d = 1;
+        for (let i = 0; i < message.length; i++) {
+            p[r][i] = "*";
+            r += d;
+            if (r == 0 || r == rails - 1) d *= -1;
+        }
+        let index = 0;
+        for (let R = 0; R < r; R++) {
+            for (let c = 0; c < message.length; c++) {
+                if (pattern[R][c] == "*" && index < message.length) {
+                    pattern[R][c] = message[index++];
+                };
+            };
+        };
+        let decoded = [];
+        r = 0;
+        d = 1;
+        for (let i = 0; i < message.length; i++) {
+            decoded.push(p[r][i]);
+            r += d;
+            if (r == 0 || r == rails - 1) d *= -1;
+        };
+        await respond({ text: `*Rail Fence Decoded:* \`${decoded.join("")}\`` });
+    }
+});
+
+app.command("/b64$", async ({ command, ack, respond }) => {
+    await ack();
+    const input = command.text;
+    if (!input) {
+        await respond({ text: "64__64. also add an input" });
+        return;
+    }
+    const mode = input.charAt(0).toUpperCase();
+    const Text = input.substring(2);
+    if (mode != "E" && mode != "D") {
+        await respond({ text: "you no pick mode?" });
+        return;
+    }
+
+    if (mode == "E") {await respond({ text: `*Encoded:* \`${Buffer.from(Text).toString("base64")}\`` });}
+    else             {await respond({ text: `*Decoded:* \`${Buffer.from(Text, "base64").toString("utf-8")}\`` });}
 });
