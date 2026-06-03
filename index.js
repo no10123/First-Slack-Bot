@@ -72,9 +72,9 @@ app.command("/pug-dogfact", async ({ ack, respond }) => {
   }
 });
 
-app.command("/echo", async ({ack, respond}) => {
+app.command("/echo", async ({command, ack, respond}) => {
     await ack();
-    const I = ack.body.text;
+    const I = command.body.text;
     if (!I) {
         await respond({text:"type something!"});
     };
