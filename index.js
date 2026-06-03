@@ -109,7 +109,8 @@ app.command("/pug-help", async ({ ack, respond }) => {
           text: "*API Stuff:*\n" +
                 "- `/pug-catfact` - gives you a fun cat fact.\n" +
                 "- `/pug-dogfact` - gives you a fun dog fact.\n" +
-                "- `/pug-joke`    - tells a joke."
+                "- `/pug-joke`    - tells a joke.\n" +
+                "- `/translate$`  - translates text"
         }
       }
     ]
@@ -323,4 +324,35 @@ app.command("/morse$", async ({ command, ack, respond }) => {
     };
 
     await respond({ text: `*Morse Code:* \`${R.join(" ")}\`` });
+});
+
+app.command("/translate$", async ({ command, ack, respond }) => {
+    await ack();
+    let input = command.text;
+    if (!input) {
+        await respond({ text: "type something..." });
+        return;
+    }
+    const [currentLang, targetLang, ...messageParts] = input.split(" ");
+    const textToTranslate = messageParts.join(" ");
+    if (!textToTranslate) {
+        await respond({ text: "hmm, that isn't quite right." });
+        return;
+    } else if (targetLang.length != 2 || currentLang.length != 2) {
+        await respond({ text: "languge selection should be shortened to two charaters.\nFor ex. english is en" });
+        return;
+    }
+
+    try {
+        // uses free MyMemory API
+        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(textToTranslate)}&langpair=${currentLang}|${targetLang}`;
+        const response = await axios.get(url);
+        const translatedText = response.data.responseData.translatedText;
+        await respond({ 
+            text: `*Translation (${targetLang.toUpperCase()}):* \`${translatedText}\`` 
+        });
+    } catch (err) {
+        console.error(err);
+        await respond({ text: "you or the API encountured an error. Yipee..." });
+    }
 });
