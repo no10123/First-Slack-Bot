@@ -8,6 +8,7 @@ const app = new App({
   appToken: process.env.SLACK_APP_TOKEN,
   socketMode: true
 });
+const range = (length) => Array.from({ length }, (_, i) => i);
 
 app.command("/pug-ping", async ({ command, ack, respond }) => {
   const start = Date.now();
@@ -77,6 +78,39 @@ app.command("/pug-echo", async ({command, ack, respond}) => {
     const I = command.body.text;
     if (!I) {
         await respond({text:"type something!"});
+        return;
     };
     await respond({text:I})
-})
+});
+
+let key = [
+  "a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", 
+  "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", 
+  "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", 
+  "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z"
+];
+
+app.command("/e$", async ({ command, ack, respond }) => {
+    await ack();
+    const input = command.text; 
+    if (!input) {
+        await respond({ text: "can't encode nothing." });
+        return;
+    }
+    let chars = input.split(""); 
+    let E = [c[0]]; 
+    for (let i = 1; i < chars.length; i++) { 
+        let x = chars[i];
+        let y = chars[i - 1];
+        let X = key.indexOf(x);
+        let Y = key.indexOf(y);
+        // keeps symbols the same
+        if (X == -1 || Y == -1) {
+            E.push(x);
+            continue;
+        }
+        let z = (((X - Y) % key.length) + key.length) % key.length;
+        E.push(key[z]);
+    }
+    await respond({ text: `encoded msg: ${E.join("")}` });
+});
