@@ -129,7 +129,7 @@ app.command("/pug-help", async ({ ack, respond }) => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "Core: " +
+          text: "Core: \n" +
                 "- `/pug-help`        - displays this.\n" +
                 "- `/pug-ping`        - pings the bot.\n" +
                 "- `/pug-echo [text]` - just says the text"
