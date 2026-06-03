@@ -121,7 +121,7 @@ app.command("/pug-help", async ({ ack, respond }) => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "*Pug Bot - Cryptography & Utility Bot*\nStuff you can do:"
+          text: "*Pug Bot - Cryptography & Utility Bot*\nStuff you can do:\n"
         }
       },
       { type: "divider" },
@@ -132,7 +132,7 @@ app.command("/pug-help", async ({ ack, respond }) => {
           text: "Core: \n" +
                 "- `/pug-help`        - displays this.\n" +
                 "- `/pug-ping`        - pings the bot.\n" +
-                "- `/pug-echo [text]` - just says the text"
+                "- `/pug-echo [text]` - just says the text\n"
         }
       },
       {
@@ -149,7 +149,7 @@ app.command("/pug-help", async ({ ack, respond }) => {
                 "- `/vigenere$`           - another cipher.\n" +
                 "- `/rail$`               - oh,imo and guess what another one.\n" +
                 "- `/b64$`                - wait, there's another ciphers.\n" +
-                "- `/u$                   - converts between string and unicode (use ',')."
+                "- `/u$                   - converts between string and unicode (use ',').\n"
         }
       },
       {
