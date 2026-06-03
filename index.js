@@ -1,6 +1,8 @@
 require("dotenv").config();
 const axios = require("axios");
 const cron = require("node-cron");
+const crypto = require("crypto");
+const Parser = require("expr-eval").Parser;
 const { App } = require("@slack/bolt");
 const range = (length) => Array.from({ length }, (_, i) => i);
 
@@ -16,6 +18,24 @@ let key = [
   "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", 
   "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z"
 ];
+
+const morseCodeMap = {
+  "a": ".-",    "b": "-...",  "c": "-.-.",  "d": "-..",
+  "e": ".",     "f": "..-.",  "g": "--.",   "h": "....",
+  "i": "..",    "j": ".---",  "k": "-.-",   "l": ".-..",
+  "m": "--",    "n": "-.",    "o": "---",   "p": ".--.",
+  "q": "--.-",  "r": ".-.",   "s": "...",   "t": "-",
+  "u": "..-",   "v": "...-",  "w": ".--",   "x": "-..-",
+  "y": "-.--",  "z": "--..",
+  
+  "1": ".----", "2": "..---", "3": "...--", "4": "....-",
+  "5": ".....", "6": "-....", "7": "--...", "8": "---..",
+  "9": "----.", "0": "-----", " ": "/"
+};
+
+const iMorseMap = Object.fromEntries(
+  Object.entries(morseCodeMap).map(([letter, morse]) => [morse, letter])
+);
 
 function shuffleKey() {
     for (let i = key.length - 1; i > 0; i--) {
@@ -180,4 +200,91 @@ app.command("/rk", async ({ack, respond}) => {
     await respond({ 
       text: `Key has been reset.\nNew Key Layout: \`${key.join("")}\`` 
     });
+});
+
+app.command("/hash$", async ({ command, ack, respond }) => {
+    await ack();
+    const input = command.text;
+    if (!input) return await respond("#nothing to hash.");
+
+    // SHA-256 hash
+    const hash = crypto.createHash("sha256").update(text).digest("hex");
+    await respond({ text: `*SHA-256 Hash:* \`${hash}\`` });
+});
+
+app.command("/calc$", async ({ command, ack, respond }) => {
+    await ack();
+    const input = command.text;
+    if (!input) return await respond("^0+h!^& +0 (@|(u|@+3.");
+
+    const result = Parser.evaluate(input);
+    await respond({ text: `*result:* \`${result}\`` });
+});
+
+app.command("/ecaesar$", async ({ command, ack, respond }) => {
+    await ack();
+    const input = command.text;
+    if (!input) {
+        await respond({ text: "oh no your empty msg is like a stab..." });
+        return;
+    }
+    // get num and msg seperated
+    const [num, ...messageP] = input.split(" "); ;
+    const shift = parseInt(num, 10);
+    const message = messageP.join(" ");
+    if (isNaN(shift) || !message) {
+        await respond({ text: "are you trying to `poison` me?" });
+        return;
+    }
+
+    message = message.slice(0, shift) + message.slice(shift + 1);
+    await respond({ text: `encoded msg: "${message}"` });
+});
+
+app.command("/dcaesar$", async ({ command, ack, respond }) => {
+    await ack();
+    const input = command.text;
+    if (!input) {
+        await respond({ text: "oh no your empty msg is like a stab..." });
+        return;
+    }
+    // get num and msg seperated
+    const [num, ...messageP] = input.split(" ");
+    const shift = parseInt(num, 10);
+    const message = messageP.join(" ");
+    if (isNaN(shift) || !message) {
+        await respond({ text: "are you trying to `poison` me?" });
+        return;
+    }
+
+    message = message.slice(shift + 1) + message.slice(0, shift);
+    await respond({ text: `encoded msg: "${message}"` });
+});
+
+app.command("/morse", async ({ command, ack, respond }) => {
+    await ack();
+    let input = command.text;
+    if (!input) {
+        await respond({ text: ".__. , really nothing to encode/decode :(" });
+        return;
+    }
+    if (input[0] == "E" || input[0] == "D") {
+        const [Type, ...input] = input.split(" ")
+    };
+    const chars = input.toLowerCase().split("");
+    let R = [];
+
+    for (let char of chars) {
+        if (morseCodeMap[char]) {
+            if (Type == "D") {
+                R.push(imorseCodeMap[char]);
+            } else {
+                R.push(morseCodeMap[char]);
+            }
+        } else {
+            R.push(char);
+        };
+    };
+
+    await respond({ text: `*Morse Code:* \`${R.join(" ")}\`` });
 });
