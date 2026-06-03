@@ -180,4 +180,4 @@ app.command("/rk", async ({ack, respond}) => {
     await respond({ 
       text: `Key has been reset.\nNew Key Layout: \`${key.join("")}\`` 
     });
-})
+});
