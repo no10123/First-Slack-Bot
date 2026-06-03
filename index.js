@@ -98,7 +98,7 @@ app.command("/e$", async ({ command, ack, respond }) => {
         return;
     }
     let chars = input.split(""); 
-    let E = [c[0]]; 
+    let E = [chars[0]]; 
     for (let i = 1; i < chars.length; i++) { 
         let x = chars[i];
         let y = chars[i - 1];
@@ -113,4 +113,29 @@ app.command("/e$", async ({ command, ack, respond }) => {
         E.push(key[z]);
     }
     await respond({ text: `encoded msg: ${E.join("")}` });
+});
+
+app.command("/d$", async ({ command, ack, respond }) => {
+    await ack();
+    const input = command.text; 
+    if (!input) {
+        await respond({ text: "can't decode nothing." });
+        return;
+    }
+    let chars = input.split(""); 
+    let D = [chars[0]];
+    for (let i = 1; i < chars.length; i++) { 
+        let x = chars[i];
+        let y = D[i-1];
+        let X = key.indexOf(x);
+        let Y = key.indexOf(y);
+        // keeps symbols the same
+        if (X == -1 || Y == -1) {
+            D.push(x);
+            continue;
+        }
+        let z = (((X + Y) % key.length) + key.length) % key.length;
+        D.push(key[z]);
+    }
+    await respond({ text: `decoded msg: ${D.join("")}` });
 });
