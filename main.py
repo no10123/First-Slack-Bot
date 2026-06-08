@@ -5,6 +5,9 @@ import requests
 import os
 from fastapi import FastAPI, HTTPException
 from google import genai
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI(title="Pug API")
 

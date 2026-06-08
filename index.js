@@ -315,6 +315,7 @@ app.command("/hash$", async ({ command, ack, respond }) => {
         await respond({ text: "hmm, try other commands." });
     }
 });
+
 app.command("/calc$", async ({ command, ack, respond }) => {
     await ack();
     const input = command.text;
