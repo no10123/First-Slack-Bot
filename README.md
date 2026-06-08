@@ -13,6 +13,11 @@ Notable feutures - The most notable feuture are is the custom encoder I made "/e
 since not only is it my own cipher but it has a couple of other commands that interact with it, 
 Like "/sk$" wich sets the key of the cipher, and it even resets the key evry night automatically.
 
+below are some img's showing how pug bot can be used
+![shows hashing and ai usage](img1.png)
+![shows the custom encoding tool](img2.png)
+![shows weather command](img3.png)
+
 Pug Bot - Cryptography & Utility Bot
 Stuff you can do:
 Core: 
