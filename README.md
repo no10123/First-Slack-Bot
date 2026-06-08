@@ -3,7 +3,7 @@ a slack bot with cryptography and API based commands
 
 how to use bot - it is installed on hackclub so just go to slack, perferbly the #msg-pug-bot channel (or msg yourself) so you don't bother anyone, and type / followed by one of the commands at the bottom.
 
-how to set up bot - https://slack.com/oauth/v2/authorize?client_id=2210535565.11260056134019&scope=chat:write,commands,app_mentions:read,channels:history&user_scope=
+how to set up bot (optional) - https://slack.com/oauth/v2/authorize?client_id=2210535565.11260056134019&scope=chat:write,commands,app_mentions:read,channels:history&user_scope=
 
 
 note - almost all commands require an input after the command. Make sure the input is separated from the command with a space.
