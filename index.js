@@ -299,11 +299,22 @@ app.command("/hash$", async ({ command, ack, respond }) => {
     const input = command.text;
     if (!input) return await respond("#nothing to hash.");
 
-    // SHA-256 hash
-    const hash = crypto.createHash("sha256").update(input).digest("hex");
-    await respond({ text: `*SHA-256 Hash:* \`${hash}\`` });
+    try {
+        // 1. Define your local Python API endpoint
+        
+        const response = await axios.get("http://127.0.0.1:8000/api/crypto/hash", {
+            params: { text: input }
+        });
+        
+        const apiHash = response.data.hash;
+        
+        await respond({ text: `*SHA-256 Hash:* \`${apiHash}\`` });
+        
+    } catch (err) {
+        console.error("API Error:", err.message);
+        await respond({ text: "hmm, try other commands." });
+    }
 });
-
 app.command("/calc$", async ({ command, ack, respond }) => {
     await ack();
     const input = command.text;
@@ -660,4 +671,28 @@ app.command("/u$", async ({ command, ack, respond }) => {
 
     if (mode == "E") {await respond({ text: `*Encoded:* ${encoded}`});}
     else             {await respond({ text: `*Decoded:* ${decoded}`});};
+});
+
+app.command("/ai$", async ({ command, ack, respond }) => {
+    await ack();
+    const prompt = command.text;
+    if (!prompt) return await respond("you need a prompt");
+
+    // Let the user know the bot is thinking
+    await respond(`- *Loading*...`);
+
+    try {
+        const response = await axios.get("http://127.0.0.1:8000/api/ai/ask", {
+            params: { prompt: prompt }
+        });
+
+        if (response.data.error) {
+            await respond({ text: `Error: ${response.data.error}` });
+        } else {
+            await respond({ text: response.data.response });
+        }
+    } catch (err) {
+        console.error(err);
+        await respond({ text: "command currently unavailible" });
+    }
 });
