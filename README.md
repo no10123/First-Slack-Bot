@@ -24,6 +24,10 @@ I built this originally just as a ision for stardance,
 But i learned a lot about what API's are and how they work,
 ssh servers, and hosting code, cryptography, and backend systems.
 
+Some problems I faced, are stting up the 24 / 7 server, so it could run while my PC is off,
+setting up a custom python API, for the ai api and hashing, 
+and trying to keep it simple but unique.
+
 Notable features - The most notable feature are is the custom encoder I made "/e$" and "/d$",
 since not only is it my own cipher but it has a couple of other commands that interact with it,
 Like "/sk$" which sets the key of the cipher, and it even resets the key every night automatically.
