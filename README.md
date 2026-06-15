@@ -1,44 +1,97 @@
-# First Slack Bot
-a slack bot with cryptography and API based commands
+#First Slack Bot
+a slack bot with cryptography and api based commands
 
-how to use bot - it is installed on hackclub so just go to slack, perferably the #msg-pug-bot channel 
-(https://hackclub.enterprise.slack.com/archives/C0B96QM14UR) (or msg yourself) so you don't bother anyone, 
-and type / followed by a command. For example /pug-help, /pug-ping, /e$ hello.
+what this project is: 
+A slack bot built for the hack club slack workspace that lets you run cryptography tools, api utilities, and simple automation commands directly inside slack. It started as a small experiment for stardance but grew into a larger system for exploring backend development, apis, and basic cryptography design.
 
-how to set up bot (optional) - https://slack.com/oauth/v2/authorize?client_id=2210535565.11260056134019&scope=chat:write,commands,app_mentions:read,channels:history&user_scope=
+the bot is designed around a command system where everything is triggered through / commands. each command either performs a transformation (like encoding or decoding text), fetches external data through API's, or runs a utility function (like hashing).
 
+the main goal of this project was to understand how irl bots connect multiple systems together: apis, persistent storage, and background processes.
 
-note - almost all commands require an input after the command. Make sure the input is separated from the command with a space.
+how to use the bot:
+the bot is already installed in the hack club slack workspace.
+to use it:
+go to slack and run commands starting with /
+it is recommended to use the bot in the #msg-pug-bot channel or message it directly.
+example usage:
+/pug-help
+/pug-ping
+/e$ hello
 
+Note: almost all commands require an input after the command, separated by a space.
+setup (optional):
+if you want to run your own version:
+https://slack.com/oauth/v2/authorize?client_id=2210535565.11260056134019&scope=chat:write,commands,app_mentions:read,channels:history&user_scope=
+clone the repository:
+git clone https://github.com/no10123/First-Slack-Bot/
+cd https://github.com/no10123/First-Slack-Bot/
+npm install
 
-#What this project is
-a slack  bot that can:
+set environment variables (create a .env file):
+SLACK_BOT_TOKEN=your_token
+SLACK_APP_TOKEN=your_token
+run the bot:
+node index.js
 
-1. run cryptography tools directly in Slack
-2. use APIs
-3. use custom encoding systems
-4. interact with AI through an API
-5. Save and reuse data through persistent storage
+I learned a lot about what API's are and how they work, ssh servers, 
+and hosting code, cryptography, and backend systems.
 
-I built this originally just as a ision for stardance,
-But i learned a lot about what API's are and how they work,
-ssh servers, and hosting code, cryptography, and backend systems.
+this project taught me how to:
 
-Some problems I faced, are stting up the 24 / 7 server, so it could run while my PC is off,
-setting up a custom python API, for the ai api and hashing, 
-and trying to keep it simple but unique.
+build a slack bot using node.js and slack bolt
+work with external apis and async request handling
+connect multiple services together (slack, python services, external apis)
+store persistent data using local json files
+design command based systems that stay scalable as features grow
+deploy and host backend code on remote servers using ssh
+notable features
 
-Notable features - The most notable feature are is the custom encoder I made "/e$" and "/d$",
-since not only is it my own cipher but it has a couple of other commands that interact with it,
-Like "/sk$" which sets the key of the cipher, and it even resets the key every night automatically.
-* /e$  - encodes text using my custom cipher.
-* /d$  - decodes the encoded msgs.
-* /sk$ - changes or shuffles the cipher key.
-* /rk  - resets the key.
-* Key state is persistant and can be reset on a schedule
+the coolest part of this project is the custom encoding system built around /e$ and /d$.
+this system works like a stateful cipher where text is encoded based on a mutable key that can be changed or shuffled using /sk$ and reset with /rk. the key is stored persistently and can also be automatically rotated on a schedule.
 
-This system demonstrates:
-cryptograhic design, and custom algorithmic logic.
+this makes the system more than just a static cipher, since the output depends on runtime state rather than a fixed algorithm.
+
+key commands:
+
+/e$ encodes text using the custom cipher
+/d$ decodes encoded text
+/sk$ changes or shuffles the cipher key
+/rk resets the cipher key
+
+this system demonstrates:
+cryptographic design, custom algorithm design, and basic key management.
+
+features
+
+cryptography and utilities:
+
+/e$ custom encoder
+/d$ custom decoder
+/sk$ key shuffle or set
+/rk reset key
+/hash$ hashing
+/calc$ expression evaluation
+/vigenere$ cipher
+/rail$ rail fence cipher
+/b64$ base64 encode/decode
+/u$ unicode conversion
+
+api and external tools:
+
+/pug-catfact random cat fact
+/pug-dogfact random dog fact
+/pug-joke random joke
+/translate$ text translation
+/pug-weather weather lookup
+/pug-remind scheduled reminders
+/pug-rate currency conversion
+/ai$ ai response via backend api
+
+core:
+
+/pug-help command list
+/pug-ping latency test
+/pug-echo text output
 
 
 below are some img's showing how pug bot can be used
@@ -47,31 +100,9 @@ below are some img's showing how pug bot can be used
 ![shows weather command](img3.png)
 
 
-Pug Bot - Cryptography & Utility Bot
-Stuff you can do:
-Core:
-- /pug-help        - displays this.
-- /pug-ping        - pings the bot.
-- /pug-echo [text] - just says the textCryptography & Math:
-- /e$ [text]           - Custom differential encoder.
-- /d$ [text]           - Custom differential decoder.
-- /sk$ [optional: ...] - shuffles, or sets the key used for /e$ and /d$.
-- /rk                  - resets key.
-- /hash$ [text]        - hashes the text.
-- /calc$ [expression]  - evaluates a expression
-- /vigenere$           - another cipher.
-- /rail$               - oh,imo and guess what another one.
-- /b64$                - wait, there's another ciphers.
-- /u$                   - converts between string and unicode (use ',').API Stuff:
-- /pug-catfact - gives you a fun cat fact.
-- /pug-dogfact - gives you a fun dog fact.
-- /pug-joke    - tells a joke.
-- /translate$  - translates text
-- /pug-weather - fetches weather for that reigon
-- /pug-remind  - reminds you of a msg in x minutes
-- /pug-rate    - get the rate of currency
-- /ai$         - sends a prompt to gemini and gives response
-
-Credits:
+credits:
 Built by me
-Built for hack club stardance (slack bot mission)
+Built for stardance
+
+built by me
+built for hack club stardance
